@@ -61,6 +61,7 @@ int main(int argc, char* argv[]) {
         records.push_back(attrs);
 
     }
+
    cout << numOfRecord << endl;
 
     // // iterate through records by row
@@ -78,10 +79,14 @@ int main(int argc, char* argv[]) {
 
     //     }
     // }
-    int part_size = NUM_OF_COLS/8;
-    int start_col[8] = {0, part_size, part_size*2, part_size*3, part_size*4, part_size*5, part_size*6, part_size*7};
-    int end_col[8] = {part_size, part_size*2, part_size*3, part_size*4, part_size*5, part_size*6, part_size*7, NUM_OF_COLS};
+
+
+    // int part_size = NUM_OF_COLS/8;
+    // int start_col[8] = {0, part_size, part_size*2, part_size*3, part_size*4, part_size*5, part_size*6, part_size*7};
+    // int end_col[8] = {part_size, part_size*2, part_size*3, part_size*4, part_size*5, part_size*6, part_size*7, NUM_OF_COLS};
     
+
+
     // by column
     // for (int j = 0; j< NUM_OF_COLS; j++) { 
     //     for (int i = 0; i < numOfRecord; i++) {
@@ -104,29 +109,55 @@ int main(int argc, char* argv[]) {
     // }
 
 
-    std::vector<std::thread> threads;
-    for (int t = 0; t < 8; t++) {
-        threads.emplace_back([&pages, &heapfiles, &records, &start_col, &end_col, &numOfRecord, &page_size](int thread_id) {
-            for (int j = start_col[thread_id]; j < end_col[thread_id]; j++) {
-                for (int i = 0; i < numOfRecord; i++) {
-                    Record record;
-                    record.push_back(records[i][j].c_str());
-                    while (add_fixed_len_page(pages[j], &record) == -1) {
-                        PageID pid = alloc_page(heapfiles[j]);
-                        write_page(pages[j], heapfiles[j], pid);
-                        init_fixed_len_page(pages[j], page_size, fixed_len_sizeof(&record));
-                    }
-                    record.clear();
+    // std::vector<std::thread> threads;
+    // for (int t = 0; t < 8; t++) {
+    //     threads.emplace_back([&pages, &heapfiles, &records, &start_col, &end_col, &numOfRecord, &page_size](int thread_id) {
+    //         for (int j = start_col[thread_id]; j < end_col[thread_id]; j++) {
+    //             for (int i = 0; i < numOfRecord; i++) {
+    //                 Record record;
+    //                 record.push_back(records[i][j].c_str());
+    //                 while (add_fixed_len_page(pages[j], &record) == -1) {
+    //                     PageID pid = alloc_page(heapfiles[j]);
+    //                     write_page(pages[j], heapfiles[j], pid);
+    //                     init_fixed_len_page(pages[j], page_size, fixed_len_sizeof(&record));
+    //                 }
+    //                 record.clear();
+    //             }
+    //             PageID pid = alloc_page(heapfiles[j]);
+    //             write_page(pages[j], heapfiles[j], pid);
+    //         }
+    //     }, t);
+    // }
+
+
+    // Using OpenMP
+    int num_threads = omp_get_max_threads();
+
+    #pragma omp parallel num_threads(num_threads)
+    {
+        int thread_id = omp_get_thread_num();
+
+        for (int j = thread_id; j < NUM_OF_COLS; j += num_threads) {
+            for (int i = 0; i < numOfRecord; i++) {
+                Record record;
+                record.push_back(records[i][j].c_str());
+                while (add_fixed_len_page(pages[j], &record) == -1) {
+                    PageID pid = alloc_page(heapfiles[j]);
+                    write_page(pages[j], heapfiles[j], pid);
+                    init_fixed_len_page(pages[j], page_size, fixed_len_sizeof(&record));
                 }
-                PageID pid = alloc_page(heapfiles[j]);
-                write_page(pages[j], heapfiles[j], pid);
+                record.clear();
             }
-        }, t);
+            PageID pid = alloc_page(heapfiles[j]);
+            write_page(pages[j], heapfiles[j], pid);
+        }
     }
 
-    for (auto& thread : threads) {
-        thread.join();
-    }
+    // for (auto& thread : threads) {
+    //     thread.join();
+    // }
+
+
     // close all heapfiles
     for (int i = 0; i< NUM_OF_COLS; i++) {
         fclose(heapfiles[i]->file_ptr);
