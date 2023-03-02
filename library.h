@@ -15,6 +15,7 @@
 #include <cstring>
 #include <thread>
 #include <filesystem>
+#include <omp.h>
 typedef const char* V;
 typedef std::vector<V> Record;
 using namespace std;

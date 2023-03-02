@@ -133,6 +133,6 @@ In contrast, in a row store, data is organized by rows, so each row is stored co
 
 4. Compare the performance of  `select3`  with that of  `select`  and  `select2`. Comment on the difference especially with respect to different selection ranges (different values of start and end).
 
-    The performance figure with pagesize = 4096 is shown as below. The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
+    The performance figure with pagesize = 4096 is shown in 5.2.3(the previous part). The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
     We can see that all options speed up as the search range increases. The difference is that the increasing speed.
     The reason why select3 is slower than the other two selects is that it needs to obtain the record id in a column according to the condition, and then go to the specified column to obtain data.
