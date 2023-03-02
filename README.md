@@ -47,7 +47,7 @@ ATTRIBUTE_SIZE = 10;
 
 **Important !!!**
 
-If you trying to use colume store, you need to change `SLOT_SIZE = ATTRIBUTE_SIZE`, and`LINE_SIZE= SIZE OF A RECORD`
+If you trying to use column store, you need to change `SLOT_SIZE = ATTRIBUTE_SIZE`, and`LINE_SIZE= SIZE OF A RECORD`
 
 
 
@@ -97,19 +97,27 @@ If you trying to use colume store, you need to change `SLOT_SIZE = ATTRIBUTE_SIZ
 
     The performance figure is shown as below. The abscissa is the page_size, and the ordinate is the number of records loaded per second. We can find that as the page size increases, the speed of loading data is faster, but it will not continue to increase when the page being too large.
 
+    ![4.3.1](./assets/4.3.1.png)
+
 2. Measure the performance of the query versus page size.
 
     The performance figure is shown as below. The abscissa is the page_size, and the ordinate is the number of records searched per second. 
+
+    ![4.3.2](./assets/4.3.2.png)
 
 3. Comment on the choice of page size and the effects of the range from  _start_  and  _end_  on the performance of the query.
 
    The performance figure with pagesize = 4096 is shown as below. The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
    As the search area expands, the search speed also increases.
+   
+   ![4.3.3](./assets/4.3.3.png)
 
 #### Experiment 5.2
 1. Measure the performance of  `csv2colstore`  against different page sizes.
 
     The performance figure is shown as below. The abscissa is the page_size, and the ordinate is the number of records loaded per second. 
+
+    ![5.2.1](./assets/5.2.1.png)
 
 2. Compare the result with that of  `csv2heapfile`  in the previous section. Comment on the difference.
 
@@ -120,6 +128,8 @@ In contrast, in a row store, data is organized by rows, so each row is stored co
 
    The performance figure with pagesize = 4096 is shown as below. The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
    We can see that both options speed up as the search range increases. The difference between the two is that the speed of select increases more than select2.
+
+   ![5.2.3](./assets/5.2.3.png)
 
 4. Compare the performance of  `select3`  with that of  `select`  and  `select2`. Comment on the difference especially with respect to different selection ranges (different values of start and end).
 
