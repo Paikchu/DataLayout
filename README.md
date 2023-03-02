@@ -92,3 +92,37 @@ If you trying to use colume store, you need to change `SLOT_SIZE = ATTRIBUTE_SIZ
    
    Page-based organization can lead to contention, which may cause locking and blocking issues if multiple threads. need to access the same page at the same time.
 
+#### Experiment 4.3
+1. Measure the performance of `csv2heapfile`, comment on how the page size affects the performance of load.
+
+    The performance figure is shown as below. The abscissa is the page_size, and the ordinate is the number of records loaded per second. We can find that as the page size increases, the speed of loading data is faster, but it will not continue to increase when the page being too large.
+
+2. Measure the performance of the query versus page size.
+
+    The performance figure is shown as below. The abscissa is the page_size, and the ordinate is the number of records searched per second. 
+
+3. Comment on the choice of page size and the effects of the range from  _start_  and  _end_  on the performance of the query.
+
+   The performance figure with pagesize = 4096 is shown as below. The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
+   As the search area expands, the search speed also increases.
+
+#### Experiment 5.2
+1. Measure the performance of  `csv2colstore`  against different page sizes.
+
+    The performance figure is shown as below. The abscissa is the page_size, and the ordinate is the number of records loaded per second. 
+
+2. Compare the result with that of  `csv2heapfile`  in the previous section. Comment on the difference.
+
+    We can find that in csv2colstore, as the page size increases, the speed of loading data is slower, which is opposite to csv2heapfile. It may because each page will take longer to fill up before it is written to disk. This means that there will be more page allocations and writes to disk, which can slow down the overall performance.
+In contrast, in a row store, data is organized by rows, so each row is stored contiguously. When reading data from a CSV file in a row store, the program reads each row and store it sequentially in the heap file. In this case, a larger page size can be beneficial because it means that each page will store more rows, and hence fewer pages will be required to store the entire dataset. This can lead to faster performance because there will be fewer page allocations and writes to disk.
+
+3. Compare the performance of  `select2`  with that of  `select`  in the previous section. Comment on the difference.
+
+   The performance figure with pagesize = 4096 is shown as below. The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
+   We can see that both options speed up as the search range increases. The difference between the two is that the speed of select increases more than select2.
+
+4. Compare the performance of  `select3`  with that of  `select`  and  `select2`. Comment on the difference especially with respect to different selection ranges (different values of start and end).
+
+    The performance figure with pagesize = 4096 is shown as below. The abscissa is the number of data hits by the query, and the ordinate is the number of records searched per second. 
+    We can see that all options speed up as the search range increases. The difference is that the increasing speed.
+    The reason why select3 is slower than the other two selects is that it needs to obtain the record id in a column according to the condition, and then go to the specified column to obtain data.
