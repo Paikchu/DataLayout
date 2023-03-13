@@ -1,1 +1,7 @@
 data.csv
+CMakeFiles
+colstore
+CMakeCache.txt
+Makefile
+pagefile
+heapfile

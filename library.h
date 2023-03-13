@@ -21,7 +21,7 @@ typedef std::vector<V> Record;
 using namespace std;
 using namespace std::chrono;
 
-const int SLOT_SIZE = 10;   // if column, slot_size == attribute size else slot_size == attribute_size * num_of_attributes
+const int SLOT_SIZE = 1000;   // if column, slot_size == attribute size else slot_size == attribute_size * num_of_attributes
 
 const int ATTRIBUTE_SIZE = 10;
 const int NUM_OF_COLS = 100; // 100 attributes 100 column

@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
     init_fixed_len_page(page, page_size, SLOT_SIZE);
 
     // line size of csv file
-    const int oneLineSize = SLOT_SIZE  + (SLOT_SIZE / ATTRIBUTE_SIZE) + 1;
+    const int oneLineSize = SLOT_SIZE  + (SLOT_SIZE / ATTRIBUTE_SIZE);
     char data[oneLineSize];
 
     // Record the number of records

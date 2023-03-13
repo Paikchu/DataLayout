@@ -19,7 +19,8 @@ int main(int argc, char* argv[]){
     int number_of_pages = 1;
 
     while (getline(fp,line)){
-        line = line.substr(0, line.size() - 1); // remove '\n'
+        // line = line.substr(0, line.size() - 2); // remove '\n'
+        line = line.substr(0, SLOT_SIZE + SLOT_SIZE / ATTRIBUTE_SIZE - 1);
         stringstream ss(line);
         string attr;
         while(getline(ss, attr, ',')){
